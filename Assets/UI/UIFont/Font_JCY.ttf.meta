@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: c64e9210e1966da4c9f52a59d3dff5c5
+timeCreated: 1460891809
+licenseType: Pro
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: FZZhengHeiS-M-GB
+  fontNames:
+  - FZZhengHeiS-M-GB
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 806499ff2da83594ea2ebca38c8602e4, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
