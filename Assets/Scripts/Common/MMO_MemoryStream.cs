@@ -192,7 +192,7 @@ public class MMO_MemoryStream : MemoryStream {
     /// 从流中读取一个double数组
     /// </summary>
     /// <returns></returns>
-    public double ReadUDouble()
+    public double ReadDouble()
     {
         byte[] arr = new byte[8];
         base.Read(arr, 0, 8);
@@ -203,7 +203,7 @@ public class MMO_MemoryStream : MemoryStream {
     /// 把一个double数据写入流
     /// </summary>
     /// <param name="value"></param>
-    public void WriteUInt(double value)
+    public void WriteDouble(double value)
     {
         byte[] arr = BitConverter.GetBytes(value);
         base.Write(arr, 0, arr.Length);
