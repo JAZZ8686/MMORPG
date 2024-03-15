@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class GlobalInit : MonoBehaviour {
 
+    public delegate void OnReceiveProtoHandler(ushort protoCode, byte[] buffer);
+
+    //定义委托
+    public OnReceiveProtoHandler OnReceiveProto;
+
     /// <summary>
     /// 昵称KEY
     /// </summary>

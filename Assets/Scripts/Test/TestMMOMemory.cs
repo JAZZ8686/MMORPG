@@ -8,56 +8,40 @@ public class TestMMOMemory : MonoBehaviour {
 
 	void Start () {
         //1.连接到服务器
-        //NetWorkSocket.Instance.Connect("172.19.196.66",1011);
+        NetWorkSocket.Instance.Connect("172.19.196.66",1011);
 
-        TestProto proto = new TestProto();
-        proto.Id = 1;
-        proto.Name = "测试";
-        proto.Type = 0;
-        proto.Price = 99.5f;
-
-        byte[] buffer = null;
-
-        //1.json方式
-        //string json = JsonMapper.ToJson(proto);
-
-        //using (MMO_MemoryStream ms=new MMO_MemoryStream())
-        //{
-        //    ms.WriteUTF8String(json);
-        //    buffer=ms.ToArray();
-        //}
-        //Debug.Log("buffer:" + buffer.Length);
-        //json转换为数组后长度是48
-
-        //==================================================
-        //2.自定义
-        buffer = proto.ToArray();
-        Debug.Log("buffer:" + buffer.Length);
-
-        TestProto proto2 = TestProto.GetProto(buffer);
-
-        Debug.Log("Name="+proto2.Name);
 
         //自定义的协议传输 长度是24
 
+        GlobalInit.Instance.OnReceiveProto = OnReceiveProtoCallBack;    
+
     }
 
-    private void Send(string msg)
+    //委托回调
+    private void OnReceiveProtoCallBack(ushort protoCode, byte[] buffer)
     {
-        //using(MMO_MemoryStream ms=new MMO_MemoryStream())
-        //{
-        //    ms.WriteUTF8String(msg);
+        Debug.Log("protoCode=" + protoCode);
+        if (protoCode == ProtoCodeDef.Mail_Get_Detail)
+        {
+            Mail_Get_DetailProto proto = Mail_Get_DetailProto.GetProto(buffer);
 
-        //    NetWorkSocket.Instance.SendMsg(ms.ToArray());
-        //}
+            Debug.Log("IsSuccess" + proto.IsSuccess);
+            Debug.Log("ErrorCode" + proto.ErrorCode);
+        }
     }
 
     // Update is called once per frame
     void Update () {
-        //if (Input.GetKeyDown(KeyCode.A))
-        //{
-        //    Send("你好A");
-        //}
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            TestProto proto = new TestProto();
+            proto.Id = 100;
+            proto.Name = "测试协议";
+            proto.Price = 56.5f;
+            proto.Type = 80;
+
+            NetWorkSocket.Instance.SendMsg(proto.ToArray());
+        }
         //else if (Input.GetKeyDown(KeyCode.B))
         //{
         //    Send("你好B");
@@ -68,7 +52,7 @@ public class TestMMOMemory : MonoBehaviour {
         //    {
         //        Send("你好循环"+i);
         //    }
-            
+
         //}
     }
 }
