@@ -77,8 +77,10 @@ public class NetWorkSocket : MonoBehaviour {
                             protoCode = ms.ReadUShort();
                             ms.Read(protoContent, 0, protoContent.Length);
 
+                            EventDispatch.Instance.Dispatch(protoCode, protoContent);
+
                             //临时
-                            GlobalInit.Instance.OnReceiveProto(protoCode,protoContent); 
+                            //GlobalInit.Instance.OnReceiveProto(protoCode,protoContent); 
                         }
                         //using (MMO_MemoryStream ms = new MMO_MemoryStream())
                         //{

@@ -23,6 +23,10 @@ public class GlobalInit : MonoBehaviour {
     /// </summary>
     public const string WebAccountUrl = "http://172.22.30.27:8080/";
 
+    public const string SocketIP = "172.19.196.66";
+
+    public const ushort Port = 1011;
+
     public static GlobalInit Instance;
 
     /// <summary>

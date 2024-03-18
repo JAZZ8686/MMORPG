@@ -8,12 +8,12 @@ public class TestMMOMemory : MonoBehaviour {
 
 	void Start () {
         //1.连接到服务器
-        NetWorkSocket.Instance.Connect("172.19.196.66",1011);
+        NetWorkSocket.Instance.Connect(GlobalInit.SocketIP, GlobalInit.Port);
 
 
         //自定义的协议传输 长度是24
 
-        GlobalInit.Instance.OnReceiveProto = OnReceiveProtoCallBack;    
+        GlobalInit.Instance.OnReceiveProto = OnReceiveProtoCallBack;
 
     }
 
@@ -32,14 +32,19 @@ public class TestMMOMemory : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        //if (Input.GetKeyDown(KeyCode.A))
+        //{
+        //    TestProto proto = new TestProto();
+        //    proto.Id = 100;
+        //    proto.Name = "测试协议";
+        //    proto.Price = 56.5f;
+        //    proto.Type = 80;
+
+        //    NetWorkSocket.Instance.SendMsg(proto.ToArray());
+        //}
         if (Input.GetKeyDown(KeyCode.A))
         {
-            TestProto proto = new TestProto();
-            proto.Id = 100;
-            proto.Name = "测试协议";
-            proto.Price = 56.5f;
-            proto.Type = 80;
-
+            Mail_Get_DetailProto proto = new Mail_Get_DetailProto();
             NetWorkSocket.Instance.SendMsg(proto.ToArray());
         }
         //else if (Input.GetKeyDown(KeyCode.B))
