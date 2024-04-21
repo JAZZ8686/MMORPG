@@ -34,6 +34,9 @@ public class NetWorkSocket : MonoBehaviour {
 
     //检查队列的委托
     private Action m_CheckSendQuene;
+
+    //压缩数组的长度界限
+    private const int m_CompressLen=200;
     #endregion
 
     #region 接收消息所需变量
@@ -67,26 +70,60 @@ public class NetWorkSocket : MonoBehaviour {
                 {
                     if (m_ReceiveQueue.Count > 0)
                     {
+                        //队列中的数据包
                         byte[] buffer = m_ReceiveQueue.Dequeue();
 
-                        ushort protoCode = 0;
-                        byte[] protoContent = new byte[buffer.Length - 2];
+                        //异或之后的数组
+                        byte[] bufferNew=new byte[buffer.Length-3];
+
+                        bool isCompress = false;
+                        ushort crc = 0;
+
+                       // ushort protoCode = 0;
+                        //byte[] protoContent = new byte[buffer.Length - 2];
                         using(MMO_MemoryStream ms=new MMO_MemoryStream(buffer))
                         {
-                            //协议编号
-                            protoCode = ms.ReadUShort();
-                            ms.Read(protoContent, 0, protoContent.Length);
-
-                            EventDispatch.Instance.Dispatch(protoCode, protoContent);
-
-                            //临时
-                            //GlobalInit.Instance.OnReceiveProto(protoCode,protoContent); 
+                            isCompress = ms.ReadBool();
+                            crc = ms.ReadUShort();
+                            ms.Read(bufferNew, 0, bufferNew.Length);
                         }
-                        //using (MMO_MemoryStream ms = new MMO_MemoryStream())
-                        //{
-                        //    ms.WriteUTF8String("客户端时间=" + DateTime.Now.ToString());
-                        //    this.SendMsg(ms.ToArray());
-                        //}
+
+                        //先crc
+                        int newCrc= Crc16.CalculateCrc16(bufferNew);
+
+                        Debug.Log("Crc=" + crc);
+                        Debug.Log("newCrc=" + newCrc);
+
+                        if(newCrc == crc)
+                        {
+                            //异或 得到原始数据
+                            bufferNew = SecurityUtil.Xor(bufferNew);
+
+                            if (isCompress)
+                            {
+                                bufferNew = ZlibHelper.DeCompressBytes(bufferNew);
+                            }
+
+                            ushort protoCode = 0;
+                            byte[] protoContent = new byte[bufferNew.Length-2];
+                            using (MMO_MemoryStream ms = new MMO_MemoryStream(bufferNew))
+                            {
+                                //协议编号
+                                protoCode = ms.ReadUShort();
+                                ms.Read(protoContent, 0, protoContent.Length);
+
+                                EventDispatch.Instance.Dispatch(protoCode, protoContent);
+                            }
+
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        
+
+                        
                     }
                     else
                     {
@@ -169,15 +206,35 @@ public class NetWorkSocket : MonoBehaviour {
     private byte[] MakeData(byte[] data)
     {
         byte[] retBuffer = null;
-        using(MMO_MemoryStream ms=new MMO_MemoryStream())
+
+        //1.如果数据包的长度大于了m_CompressLen则进行压缩
+        bool isCompress = data.Length > m_CompressLen ? true : false;
+        if (isCompress)
         {
-            ms.WriteUShort((ushort)data.Length);
+            data = ZlibHelper.CompressBytes(data);
+        }
+
+        //2.异或
+        data = SecurityUtil.Xor(data);
+
+        //3.Crc校验 压缩后的
+        ushort crc = Crc16.CalculateCrc16(data);
+
+
+
+        using (MMO_MemoryStream ms = new MMO_MemoryStream())
+        {
+            ms.WriteUShort((ushort)(data.Length + 3));
+            ms.WriteBool(isCompress);
+            ms.WriteUShort(crc);
             ms.Write(data, 0, data.Length);
+
             retBuffer = ms.ToArray();
         }
 
         return retBuffer;
     }
+
     #endregion
 
     #region SendMsg 发送消息 把消息加入队列

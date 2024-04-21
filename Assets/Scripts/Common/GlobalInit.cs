@@ -21,9 +21,9 @@ public class GlobalInit : MonoBehaviour {
     /// <summary>
     /// 账户服务器地址
     /// </summary>
-    public const string WebAccountUrl = "http://172.22.30.27:8080/";
+    public const string WebAccountUrl = "http://172.26.151.97:50608/";
 
-    public const string SocketIP = "172.19.196.66";
+    public const string SocketIP = "172.26.159.165";
 
     public const ushort Port = 1011;
 
