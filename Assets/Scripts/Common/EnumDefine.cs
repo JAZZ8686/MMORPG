@@ -8,7 +8,8 @@ using UnityEngine;
 public enum SceneType
 {
     Logon,
-    City
+    City,
+    ShaMo
 }
 
 /// <summary>

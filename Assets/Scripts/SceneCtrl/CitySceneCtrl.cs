@@ -25,6 +25,11 @@ public class CitySceneCtrl : MonoBehaviour {
 
     void Start()
     {
+        if (DelegateDefine.Instance.OnScenceLoadOk != null)
+        {
+			DelegateDefine.Instance.OnScenceLoadOk();
+        }
+		if (GlobalInit.Instance == null) return;
         //加载玩家
         GameObject obj = RoleMgr.Instance.LoadRole("Role_MainPlayer",RoleType.MainPlayer);
 
@@ -36,6 +41,15 @@ public class CitySceneCtrl : MonoBehaviour {
 
 		UIPlayerInfo.Instance.SetPlayerInfo();
     }
+
+	void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.B))
+        {
+			SceneMgr.Instance.LoadToShaMo();
+        }
+    }
+
 	private void OnZoom(FingerEvent.ZoomType obj)
 	{
 		switch (obj)

@@ -32,8 +32,15 @@ public class SceneMgr : Singleton<SceneMgr> {
     public void LoadToCity()
     {
         CurrentSceneType = SceneType.City;
-        Application.LoadLevel("GameScene_HuPaoCun");
+        //Application.LoadLevel("GameScene_HuPaoCun");
         SceneManager.LoadScene("Scene_Loading");
     }
-
+    /// <summary>
+    /// 去城镇场景
+    /// </summary>
+    public void LoadToShaMo()
+    {
+        CurrentSceneType = SceneType.ShaMo;
+        SceneManager.LoadScene("Scene_Loading");
+    }
 }
